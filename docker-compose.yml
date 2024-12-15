@@ -1,0 +1,47 @@
+version: "3"
+services:
+  database:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PORT: 5432
+      PGDATA: /var/lib/postgresql/data/pgdata    
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data/pgdata 
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend-kupipodaryday
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      PORT: 3000
+    ports:
+      - "4000:3000"
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend-kupipodaryday
+    restart: always
+    ports:
+      - "8081:80"
+
+networks:
+  internal:
+    driver: bridge
+    internal: true
