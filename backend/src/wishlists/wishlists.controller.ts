@@ -19,7 +19,7 @@ import { JWTGuard } from '../guards/jwt.guard';
 import { EntityNotFoundFilter } from '../core/filters/entity-not-found-exception.filter';
 
 @UseGuards(JWTGuard)
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 

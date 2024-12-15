@@ -7,13 +7,13 @@ services:
       - .env
     environment:
       POSTGRES_PORT: 5432
-      PGDATA: /var/lib/postgresql/data/pgdata    
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./pg-data:/var/lib/postgresql/data/pgdata 
+      - ./pg-data:/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
     networks:
-      - internal
+      - internal-network
 
   backend:
     build:
@@ -24,13 +24,16 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: database
       POSTGRES_PORT: 5432
       PORT: 3000
     ports:
       - "4000:3000"
     depends_on:
       - database
+    networks:
+      - internet
+      - internal-network
 
   frontend:
     build:
@@ -40,8 +43,12 @@ services:
     restart: always
     ports:
       - "8081:80"
+    networks:
+      - internet
 
 networks:
-  internal:
+  internal-network:
     driver: bridge
     internal: true
+  internet:
+    driver: bridge
